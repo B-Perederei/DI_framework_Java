@@ -17,23 +17,44 @@ public class DummyBinder implements Binder {
 
     @Override
     public <T> void bind(Class<T> clazz) {
+        if (classIsInContainer(clazz)) {
+            throw new RuntimeException("Class " + clazz.getName() + " is already in container");
+        }
        final Annotation[] Annotations = clazz.getAnnotations();
-       for (int i = 0; i < Annotations.length; i++) {
-           if (Annotations[i].annotationType().equals(Singleton.class))
-           {
-
-           }
+       if (checkSingletonInArray(Annotations)) {
+           Singletons.put(clazz, null);
+       }
+       else {
+           Prototypes.add(clazz);
        }
     }
 
     @Override
     public <T> void bind(Class<T> clazz, Class<? extends T> implementation) {
-
+        if (classIsInContainer(clazz)) {
+            throw new RuntimeException("Class " + clazz.getName() + " is already in container");
+        }
     }
 
     @Override
     public <T> void bind(Class<T> clazz, T instance) {
+        if (classIsInContainer(clazz)) {
+            throw new RuntimeException("Class " + clazz.getName() + " is already in container");
+        }
+    }
 
+    private <T> boolean classIsInContainer(Class<T> clazz) {
+        return Singletons.containsKey(clazz) || DependencyObjects.containsKey(clazz)
+                || DependencyClasses.containsKey(clazz) || Prototypes.contains(clazz);
+    }
+
+    private boolean checkSingletonInArray(Annotation[] Annotations) {
+        for (Annotation Anon : Annotations) {
+            if (Anon.annotationType().equals(Singleton.class)) {
+                return true;
+            }
+        }
+        return  false;
     }
 
     public Container getContainer()
@@ -41,6 +62,3 @@ public class DummyBinder implements Binder {
         return new DummyContainer(Singletons, DependencyObjects, DependencyClasses, Prototypes);
     }
 }
-/*
-    Якщо біндить не можна після конфігурації, то створити мапу в біндері, з нею працювати
- */
