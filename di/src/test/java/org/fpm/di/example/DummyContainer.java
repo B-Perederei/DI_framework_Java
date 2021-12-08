@@ -1,41 +1,45 @@
 package org.fpm.di.example;
-
 import org.fpm.di.Container;
+
+import java.util.HashMap;
+
+import javax.inject.Singleton;
 import java.lang.reflect.*;
-import java.util.*;
+
 
 public class DummyContainer implements Container {
-
-    private final HashMap<Class<?>, Object> Singletons;
     private final HashMap<Class<?>, Object> DependencyObjects;
     private final HashMap<Class<?>, Class<?>> DependencyClasses;
-    private final List<Class<?>> Prototypes;
 
-    public DummyContainer (HashMap<Class<?>, Object> Singletons, HashMap<Class<?>, Object> DependencyObjects,
-                           HashMap<Class<?>, Class<?>> DependencyClasses,  List<Class<?>> Prototypes) {
-        this.Singletons = Singletons;
+    public DummyContainer (HashMap<Class<?>, Object> DependencyObjects, HashMap<Class<?>, Class<?>> DependencyClasses) {
         this.DependencyObjects = DependencyObjects;
         this.DependencyClasses = DependencyClasses;
-        this.Prototypes = Prototypes;
     }
 
     @Override
     public <T> T getComponent(Class<T> clazz) {
-        if (Singletons.containsKey(clazz)) {
-            if (Singletons.get(clazz) == null) {
-                Singletons.put(clazz, createObj(clazz));
+        if (DependencyObjects.containsKey(clazz)) {
+            if (DependencyObjects.get(clazz) == null) {
+                if (clazz.getAnnotation(Singleton.class) != null) {
+                    // Creating Singleton and saving it
+                    DependencyObjects.put(clazz, createObj(clazz));
+                    return clazz.cast(DependencyObjects.get(clazz));
+                }
+                // Creating Prototype
+                return clazz.cast(createObj(clazz));
             }
-            return clazz.cast(Singletons.get(clazz));
+            return clazz.cast(DependencyObjects.get(clazz));
         }
-        else if (Prototypes.contains(clazz)) {
-            return clazz.cast(createObj(clazz));
+        else if (DependencyClasses.containsKey(clazz)){
+            return clazz.cast(getComponent(DependencyClasses.get(clazz)));
         }
-        else {
-            throw new RuntimeException("Class " + clazz.getName() + " is missing in container");
-        }
+        // Logic when bind class class (A, B) and B class is not here
+
+        throw new RuntimeException("Class " + clazz.getName() + " is missing in container");
     }
 
     private <T> T createObj(Class<T> clazz) {
+        // TODO: Make injection logic, processing of Exceptions, multiple constructors logic
         try {
             Constructor[] declaredConstructors = clazz.getDeclaredConstructors();
             declaredConstructors[0].setAccessible(true);
