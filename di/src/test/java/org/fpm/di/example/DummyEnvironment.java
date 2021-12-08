@@ -11,6 +11,6 @@ public class DummyEnvironment implements Environment {
     public Container configure(Configuration configuration) {
         DummyBinder NewBinder = new DummyBinder();
         configuration.configure(NewBinder);
-        return NewBinder.getContainer();
+        return new DummyContainer(NewBinder.getDependencyObjects(), NewBinder.getDependencyClasses());
     }
 }

@@ -33,7 +33,7 @@ public class DummyContainer implements Container {
         else if (DependencyClasses.containsKey(clazz)){
             return clazz.cast(getComponent(DependencyClasses.get(clazz)));
         }
-        // Logic when bind class class (A, B) and B class is not here
+        // Logic when bind class-class (A, B) and B class is not here
 
         throw new RuntimeException("Class " + clazz.getName() + " is missing in container");
     }

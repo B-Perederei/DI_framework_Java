@@ -9,6 +9,14 @@ public class DummyBinder implements Binder {
     private final HashMap<Class<?>, Object> DependencyObjects = new HashMap<>();
     private final HashMap<Class<?>, Class<?>> DependencyClasses = new HashMap<>();
 
+    public HashMap<Class<?>, Object> getDependencyObjects() {
+        return  DependencyObjects;
+    }
+
+    public HashMap<Class<?>, Class<?>> getDependencyClasses() {
+        return  DependencyClasses;
+    }
+
     @Override
     public <T> void bind(Class<T> clazz) {
         if (classIsInContainer(clazz)) {
@@ -37,8 +45,4 @@ public class DummyBinder implements Binder {
         return DependencyObjects.containsKey(clazz)|| DependencyClasses.containsKey(clazz);
     }
 
-    public Container getContainer()
-    {
-        return new DummyContainer(DependencyObjects, DependencyClasses);
-    }
 }
