@@ -12,7 +12,6 @@ public class DummyBinder implements Binder {
     public HashMap<Class<?>, Object> getDependencyObjects() {
         return  DependencyObjects;
     }
-
     public HashMap<Class<?>, Class<?>> getDependencyClasses() {
         return  DependencyClasses;
     }
