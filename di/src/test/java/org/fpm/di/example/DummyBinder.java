@@ -1,7 +1,6 @@
 package org.fpm.di.example;
 
 import org.fpm.di.Binder;
-import org.fpm.di.Container;
 
 import java.util.*;
 
