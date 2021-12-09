@@ -42,7 +42,6 @@ public class DummyContainer implements Container {
     }
 
     private <T> T createObj(Class<T> clazz) {
-        // TODO: Make injection logic, processing of Exceptions, multiple constructors logic, private constructors
         try {
             // Getting all constructors with @Inject
             Constructor<?>[] Constructors = clazz.getConstructors();
