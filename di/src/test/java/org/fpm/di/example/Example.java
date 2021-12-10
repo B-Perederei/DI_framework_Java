@@ -5,8 +5,7 @@ import org.fpm.di.Environment;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.*;
 
 public class Example {
 
@@ -44,5 +43,50 @@ public class Example {
     public void shouldBuildInjectDependencies() {
         final UseA hasADependency = container.getComponent(UseA.class);
         assertSame(hasADependency.getDependency(), container.getComponent(B.class));
+    }
+
+    @Test
+    public void shouldThrowExceptionPrivateConstructors() {
+        try {
+            container.getComponent(UseB.class);
+            fail("Should throw Runtime Exception");
+        }
+        catch (RuntimeException ex) {
+            String message = ex.getMessage();
+            if(!message.contains("constructors are private")) {
+                fail("Incorrect output of exception: should print 'constructors are private', but printed: " +
+                                ex.getMessage());
+            }
+        }
+    }
+
+    @Test
+    public void shouldThrowExceptionNotInContainer() {
+        try {
+            container.getComponent(C.class);
+            fail("Should throw Runtime Exception");
+        }
+        catch (RuntimeException ex) {
+            String message = ex.getMessage();
+            if(!message.contains("is missing in container")) {
+                fail("Incorrect output of exception: should print 'is missing in container', but printed: " +
+                        ex.getMessage());
+            }
+        }
+    }
+
+    @Test
+    public void shouldThrowExceptionConstructorsWithoutInjection() {
+        try {
+            container.getComponent(UseC.class);
+            fail("Should throw Runtime Exception");
+        }
+        catch (RuntimeException ex) {
+            String message = ex.getMessage();
+            if(!message.contains("constructor don't have injection in container")) {
+                fail("Incorrect output of exception: should print 'constructor don't have injection in container', " +
+                        "but printed: " + ex.getMessage());
+            }
+        }
     }
 }

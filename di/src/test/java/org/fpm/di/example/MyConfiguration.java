@@ -13,5 +13,8 @@ public class MyConfiguration implements Configuration {
 
         binder.bind(A.class, B.class);
         binder.bind(B.class, new B());
+
+        binder.bind(UseB.class);
+        binder.bind(UseC.class);
     }
 }

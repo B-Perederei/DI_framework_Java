@@ -20,7 +20,7 @@ public class DummyContainer implements Container {
     }
 
     @Override
-    public <T> T getComponent(Class<T> clazz) throws RuntimeException {
+    public <T> T getComponent(Class<T> clazz) {
         if (DependencyObjects.containsKey(clazz)) {
             if (DependencyObjects.get(clazz) == null) {
                 if (clazz.getAnnotation(Singleton.class) != null) {
@@ -90,8 +90,8 @@ public class DummyContainer implements Container {
 
         }
         catch (IllegalAccessException | InvocationTargetException | InstantiationException | NoSuchMethodException e) {
-            throw new RuntimeException("Not possible to create object of " + clazz.getName() +
-                                        ", constructors are private");
+            throw new RuntimeException("Not possible to create object of '" + clazz.getName() +
+                                        "', all constructors are private");
         }
     }
 }
