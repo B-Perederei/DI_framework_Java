@@ -14,7 +14,6 @@ public class Example {
     @Before
     public void setUp() {
         Environment env = new DummyEnvironment();
-        // Container = new DummyContainer() build on MyConfiguration
         container = env.configure(new MyConfiguration());
     }
 

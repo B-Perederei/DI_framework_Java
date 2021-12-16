@@ -25,7 +25,7 @@ public class DummyContainer implements Container {
             if (DependencyObjects.get(clazz) == null) {
                 if (clazz.getAnnotation(Singleton.class) != null) {
                     // Creating Singleton and saving it
-                    DependencyObjects.put(clazz, createObj(clazz));
+                    createSafeSingleton(clazz);
                     return clazz.cast(DependencyObjects.get(clazz));
                 }
                 // Creating Prototype
@@ -39,6 +39,12 @@ public class DummyContainer implements Container {
         // Logic when bind class-class (A, B) and B class is not here
 
         throw new RuntimeException("Class " + clazz.getName() + " is missing in container");
+    }
+
+    private synchronized <T> void createSafeSingleton(Class<T> clazz) {
+        if (DependencyObjects.get(clazz) == null) {
+            DependencyObjects.put(clazz, createObj(clazz));
+        }
     }
 
     private <T> T createObj(Class<T> clazz) {
